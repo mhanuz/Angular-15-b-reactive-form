@@ -13,7 +13,11 @@
               class="form-control">
               <span 
               *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
-              class="help-block">Please Enter a valid username </span>
+              class="help-block">
+              <span *ngIf="signupForm.get('userData.username').errors['nameIsForbidden']"> This name is invalid. </span>
+
+              <span *ngIf="signupForm.get('userData.username').errors['required']"> This field is require. </span>
+               </span>
               <!-- get method allows us to access controls easily, specify control name (single level) or path(nested) into the get method -->
           </div>
           <!-- formControlName: which input goes which controls -->
@@ -39,7 +43,21 @@
               [value]="gender">{{ gender }}
           </label>
         </div>
-
+        <!-- adding dynamic control here, -->
+        <!-- FormArryname is used to synchronize html code to our control -->
+          <div formArrayName="hobbies">
+            <h4>Your Hobbies</h4>
+            <button class="btn btn-default" 
+            type="button"
+            (click)="onAddHobby()">Add Hobby</button>
+            <div 
+            class="form-group"
+            *ngFor = "let hobbyControl of signupForm.get('hobbies')?.controls ; let i= index">
+            <input type="text" class="form-control" [formControlName]="i">
+            <!-- error solve: get method return value of AbstractControl (any type) static type checker gives you an error
+             AbstractControl doesn't have a controls property -->
+            </div>
+          </div>
         <span 
             *ngIf="!signupForm.valid && signupForm.touched"
             class="help-block">Please Enter valid data </span>
